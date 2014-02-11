@@ -41,12 +41,25 @@ public class DefaultValue {
         this.value = strings;
     }
 
+    public DefaultValue(Object o) {
+        this.required = false;
+        this.value = o;
+    }
+
     public static DefaultValue from(TypeMirror type, Optional optional) {
         switch (type.getKind()) {
-            case INT: return new DefaultValue(optional.defaultInt());
             case LONG: return new DefaultValue(optional.defaultLong());
             case BOOLEAN: return new DefaultValue(optional.defaultBool());
             case ARRAY: return new DefaultValue(optional.defaultStringArray());
+            case INT:
+            case DOUBLE:
+            case FLOAT:
+            case CHAR:
+                       return new DefaultValue(optional.defaultInt());
+        }
+        String s = optional.defaultString();
+        if (Optional.NULL.equals(s)) {
+            return new DefaultValue((String)null);
         }
         return new DefaultValue("\"" + optional.defaultString() + "\"");
     }

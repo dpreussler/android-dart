@@ -131,7 +131,7 @@ public class InjectExtraTest {
             "public class Test$$ExtraInjector {", //
             "  public static void inject(Finder finder, final test.Test target, Object source) {",
             "    Object object;", //
-            "    object = finder.getExtra(source, \"key\", \"\");", //
+            "    object = finder.getExtra(source, \"key\", null);", //
             "    target.extra = (java.lang.String) object;", //
             "  }", //
             "}" //
@@ -241,6 +241,38 @@ public class InjectExtraTest {
                 .generatesSources(expectedSource);
     }
 
+    @Test public void optionalParcable() {
+        JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join( //
+                "package test;", //
+                "import android.app.Activity;", //
+                "import android.os.Parcelable;", //
+                "import com.f2prateek.dart.InjectExtra;", //
+                "import com.f2prateek.dart.Optional;", //
+                "public class Test extends Activity {", //
+                "  @Optional @InjectExtra(\"key\") Parcelable extra;", //
+                "}" //
+        ));
+
+        JavaFileObject expectedSource =
+                JavaFileObjects.forSourceString("test/Test$$ExtraInjector", Joiner.on('\n').join( //
+                        "package test;", //
+                        "import com.f2prateek.dart.Dart.Finder;", //
+                        "public class Test$$ExtraInjector {", //
+                        "  public static void inject(Finder finder, final test.Test target, Object source) {",
+                        "    Object object;", //
+                        "    object = finder.getExtra(source, \"key\", null);", //
+                        "    target.extra = (android.os.Parcelable) object;", //
+                        "  }", //
+                        "}" //
+                ));
+
+        ASSERT.about(javaSource())
+                .that(source)
+                .processedWith(dartProcessors())
+                .compilesWithoutError()
+                .and()
+                .generatesSources(expectedSource);
+    }
 
     @Test public void failsIfInPrivateClass() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join( //
