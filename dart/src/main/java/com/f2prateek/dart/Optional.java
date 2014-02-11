@@ -32,4 +32,9 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  */
 @Retention(CLASS) @Target({ FIELD, METHOD })
 public @interface Optional {
+    String defaultString() default "";
+    String[] defaultStringArray() default {};
+    boolean defaultBool() default false;
+    int defaultInt() default 0;
+    long defaultLong() default 0L;
 }

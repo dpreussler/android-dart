@@ -22,9 +22,5 @@ interface Binding {
   /** A description of the binding in human readable form (e.g., "field 'foo'"). */
   String getDescription();
 
-  /**
-   * False if the {@link com.f2prateek.dart.Optional @Optional} annotation is present on the
-   * binding.
-   */
-  boolean isRequired();
+  DefaultValue getDefault();
 }
